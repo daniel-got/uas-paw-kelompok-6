@@ -28,7 +28,7 @@ GRANT USAGE, CREATE ON SCHEMA public TO alembic_user;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO alembic_user;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO alembic_user;
 ```
-6. (Setup user prod) Berikan akses ke alembic_user
+6. (Setup user prod) Berikan akses ke user prod
 ```sh
 GRANT USAGE ON SCHEMA public TO app_prod_user;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_prod_user;
@@ -43,42 +43,13 @@ ALTER DEFAULT PRIVILEGES FOR ROLE alembic_user IN SCHEMA public
 GRANT USAGE, SELECT ON SEQUENCES TO app_prod_user;
 ```
 
-
-## Usage example
-
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
-
-_For more examples and usage, please refer to the [Wiki][wiki]._
-
-## Development setup
-
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
-
+### Setup Alembic:
+1. Autogenerate migration
 ```sh
-make install
-npm test
+alembic revision --autogenerate -m "initiate"
 ```
-
-## Release History
-
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
-    * Work in progress
-
-## Meta
-
-Your Name – [@YourTwitter](https://twitter.com/dbader_org) – YourEmail@example.com
-
-Distributed under the XYZ license. See ``LICENSE`` for more information.
-
-[https://github.com/yourname/github-link](https://github.com/dbader/)
+2. Upgrade head
+```sh
+alembic upgrade head
+```
 
