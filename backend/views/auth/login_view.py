@@ -53,7 +53,7 @@ def login(request):
                 "email": result.email,
                 "role": result.role,
                 "exp": datetime.datetime.now(datetime.timezone.utc)
-                + datetime.timedelta(minutes=1),
+                + datetime.timedelta(minutes=30),
                 "iat":datetime.datetime.now(datetime.timezone.utc),
             },
             "secret",
