@@ -1,1 +1,0 @@
-/nix/store/1r3winn5zfalbmwinc6lq88b9xraby8a-postgresql-17.7/bin/postgres "-D" ".local_db"
