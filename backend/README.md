@@ -52,7 +52,7 @@ git clone https://github.com/Tugas-Besar-Pemrograman-Aplikasi-Web/Pyramid-Backen
 ```
 2. Masuk ke root repository
 ```sh
-cd Pyramid-Backend/
+cd backend
 ```
 3. Buat virtual env
 ```sh
