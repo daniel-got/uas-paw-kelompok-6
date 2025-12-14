@@ -1,15 +1,15 @@
 from db import Session
 from sqlalchemy import select
-from sqlalchemy.exc import NoResultFound, IntegrityError
+from sqlalchemy.exc import NoResultFound
 from typing import Optional
 from pyramid.view import view_config
-from pydantic import BaseModel, ValidationError, Field
+from pydantic import BaseModel, ValidationError
 from pyramid.response import Response
 from models.destination_model import Destination
 
 class FromRequest(BaseModel):
     country: Optional[str] = None
-    search: Optional[str] = None
+    name: Optional[str] = None
 
 def serialization_data(destination):
     return{
@@ -29,37 +29,29 @@ def destinations(request):
 
     # get destination from db
     with Session() as session:
-
-        if req_data.country == None and req_data.search == None:
-            stmt = select(Destination)
-        elif req_data.search != None and req_data.search == None:
-            stmt = select(Destination).where(Destination.name == req_data.search)
-        elif req_data.search == None and req_data.search != None:
-            stmt = select(Destination).where(Destination.country == req_data.country)
-        else:
-            stmt = select(Destination).where(Destination.country == req_data.country and Destination.name == req_data.search)
+        stmt = select(Destination) #building the query step by step if the url have some parameters
+        if req_data.country is not None:
+            stmt = stmt.where(Destination.country == req_data.country)
+        if req_data.name is not None:
+            stmt = stmt.where(Destination.name == req_data.name)
 
         try:
-            result = session.execute(stmt).scalars().all()#agar kembalikan semua, atau tidak sama sekali (imo gitu sih, cmiiw)
+            result = session.execute(stmt).scalars().all() #agar kembalikan semua, atau tidak sama sekali (imo gitu sih, cmiiw)
             return [serialization_data(dest) for dest in result] #serialisasikan semua destinasi yang ada dari .all()
         except Exception as e:
             print(e)
             return Response(json_body={"error": "Internal Server Error"}, status=500)
 
-    return {"data": str(result.country)}
-
 @view_config(route_name="destination_detail", request_method="GET", renderer="json")
 def destination_detail(request):
     dest_id = request.matchdict.get("id")
-
     with Session() as session:
         stmt = select(Destination).where(Destination.id==dest_id)
-        
         try :
             result = session.execute(stmt).scalars().one() #tampilkan 1 data 
-
             return serialization_data(result) #serialisasikan
         except NoResultFound:
             return Response(json_body={"error": "Destination not founfd"}, status=404)
         except Exception as e:
+            print(e)
             return Response(json_body={"error": "Invalid ID or server error"}, status=400)
