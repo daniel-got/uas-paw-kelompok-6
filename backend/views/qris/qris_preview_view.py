@@ -6,9 +6,11 @@ from pyramid.view import view_config
 import qrcode
 
 from helpers.qris_helper import generate_dynamic_qris_string
+from helpers.jwt_validate_helper import jwt_validate
 
 
 @view_config(route_name="qris_preview", request_method="POST", renderer="json")
+@jwt_validate
 def qris_preview(request):
     """
     POST /api/qris/preview

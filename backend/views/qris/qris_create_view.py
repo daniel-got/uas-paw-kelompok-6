@@ -9,6 +9,7 @@ from pyramid.view import view_config
 from sqlalchemy import select
 
 from models.qris_model import Qris
+from helpers.jwt_validate_helper import jwt_validate
 
 
 # Storage path configuration
@@ -18,6 +19,7 @@ MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 
 
 @view_config(route_name="qris", request_method="POST", renderer="json")
+@jwt_validate
 def qris_create(request):
     """
     POST /api/qris

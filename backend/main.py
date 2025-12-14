@@ -40,6 +40,7 @@ def main():
         ## qris
         config.add_route("qris", "/api/qris")
         config.add_route("qris_detail", "/api/qris/{id}")
+        config.add_route("qris_preview", "/api/qris/preview")
         
         ## payment
         config.add_route("payment_generate", "/api/payment/generate")

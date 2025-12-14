@@ -8,6 +8,7 @@ from sqlalchemy import select, desc
 import qrcode
 
 from helpers.qris_helper import generate_dynamic_qris_string
+from helpers.jwt_validate_helper import jwt_validate
 from models.qris_model import Qris
 
 # Storage path untuk generated QR codes
@@ -15,6 +16,7 @@ STORAGE_DIR = "storage/qris"
 
 
 @view_config(route_name="payment_generate", request_method="POST", renderer="json")
+@jwt_validate
 def payment_generate(request):
     """
     POST /api/payment/generate

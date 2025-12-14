@@ -7,6 +7,7 @@ from sqlalchemy import select
 import qrcode
 
 from models.qris_model import Qris
+from helpers.jwt_validate_helper import jwt_validate
 
 
 @view_config(route_name="qris_detail", request_method="GET", renderer="json")
@@ -62,6 +63,7 @@ def qris_detail(request):
 
 
 @view_config(route_name="qris_detail", request_method="DELETE", renderer="json")
+@jwt_validate
 def qris_delete(request):
     """
     DELETE /api/qris/{id}
