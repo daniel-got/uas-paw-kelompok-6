@@ -1,5 +1,3 @@
-import jwt
-import datetime
 import bcrypt
 from pyramid.response import Response
 from pyramid.view import view_config
@@ -51,20 +49,6 @@ def register(request):
             session.rollback()
             return Response(json_body={"error": str(err.orig)}, status=409)
 
-    # making jwt token
-    encoded = jwt.encode(
-        {
-            "sub": str(user_id),
-            "email": req_data.email,
-            "role": req_data.role,
-            "exp": datetime.datetime.now(datetime.timezone.utc)
-            + datetime.timedelta(minutes=30),
-            "iat": datetime.datetime.now(datetime.timezone.utc),
-        },
-        "secret",
-        algorithm="HS256",
-    )
-
     return {
         "message": "User registered",
         "user": {
@@ -73,5 +57,4 @@ def register(request):
             "email": req_data.email,
             "role": req_data.role,
         },
-        "token": encoded,
     }

@@ -1,0 +1,40 @@
+# Docker Ignore file
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+storage/
+*.db
+.env
+.env.local
+
+# Git
+.git
+.gitignore
+
+# Node (if frontend in same repo)
+node_modules/
+frontend/node_modules/
+
+# Alembic
+alembic/__pycache__/

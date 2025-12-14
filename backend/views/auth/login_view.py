@@ -7,19 +7,12 @@ from pydantic import BaseModel, ValidationError
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 from db import Session
-from enum import Enum
 from models.user_model import User
-
-
-class UserRole(str, Enum):
-    agent = "agent"
-    tourist = "tourist"
 
 
 class FromRequest(BaseModel):
     email: str
     password: str
-    role: UserRole
 
 
 @view_config(route_name="login", request_method="POST", renderer="json")
