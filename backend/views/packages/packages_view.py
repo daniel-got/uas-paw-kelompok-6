@@ -11,7 +11,7 @@ from typing import List
 from . import serialization_data
 import uuid
 
-
+#request class 
 class PackageRequest(BaseModel):
     destinationId: str
     name: str
@@ -25,6 +25,7 @@ class PackageRequest(BaseModel):
 
 @view_config(route_name="packages", request_method="GET", renderer="json")
 def get_packages(request):
+    #variabel search 
     destination_id = request.params.get("destination")
     search_query = request.params.get("q") or request.params.get("search")
     min_price = request.params.get("minPrice")
@@ -34,23 +35,26 @@ def get_packages(request):
 
     with Session() as session:
         stmt = select(Package)
-
+        #packages by destination
         if destination_id and destination_id != "all":
             try:
                 uuid.UUID(destination_id)
                 stmt = stmt.where(Package.destination_id == destination_id)
             except ValueError:
                 pass
-
+        #search by name 
         if search_query:
             stmt = stmt.where(Package.name.ilike(f"%{search_query}%"))
-
+        
+        #search by price min 
         if min_price:
             stmt = stmt.where(Package.price >= float(min_price))
-
+        
+        #search by price max 
         if max_price:
             stmt = stmt.where(Package.price <= float(max_price))
-
+        
+        #sorted packages
         if sort_by == "price":
             sort_column = Package.price
         elif sort_by == "duration":
@@ -64,6 +68,7 @@ def get_packages(request):
             stmt = stmt.order_by(asc(sort_column))
 
         try:
+            #showing packages
             results = session.execute(stmt).scalars().all()
             return [serialization_data(pkg) for pkg in results]
         except Exception as e:
@@ -74,29 +79,35 @@ def get_packages(request):
 @view_config(route_name="packages", request_method="POST", renderer="json")
 @jwt_validate
 def create_package(request):
+    #agent Forbidden
     if request.jwt_claims["role"] != "agent":
         return Response(
             json_body={"error": "Forbidden : Only agent can access"}, status=403
         )
 
     try:
+        #create request 
         req_data = PackageRequest(**request.json_body)
     except ValidationError as err:
         return Response(json_body={"error": str(err.errors())}, status=400)
 
     with Session() as session:
+        #select destination 
         dest_stmt = select(Destination).where(Destination.id == req_data.destinationId)
         try:
+            #get destination
             session.execute(dest_stmt).scalars().one()
         except NoResultFound:
             return Response(json_body={"error": "Destination id not found"}, status=400)
 
         try:
+            #save agent uuid and dest uuid 
             agent_uuid = uuid.UUID(request.jwt_claims["sub"])
             dest_uuid = uuid.UUID(req_data.destinationId)
         except ValueError:
             return Response(json_body={"error": "Invalid UUID format"}, status=400)
 
+        #create new packeage 
         new_package = Package(
             agent_id=agent_uuid,
             destination_id=dest_uuid,
@@ -110,6 +121,7 @@ def create_package(request):
         )
 
         try:
+            #save to database
             session.add(new_package)
             session.commit()
             session.refresh(new_package)
