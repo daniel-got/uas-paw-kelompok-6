@@ -24,7 +24,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MainLayout from "@/layout/main-layout";
 import { useAuthStore } from "@/store/auth-store";
 import { useSEO } from "@/hooks/use-seo";
-import { hasAuthToken, clearAuthStorage } from "@/lib/auth-storage";
 import * as bookingService from "@/services/booking.service";
 import * as packageService from "@/services/package.service";
 import * as destinationService from "@/services/destination.service";
@@ -64,24 +63,8 @@ export default function TouristDashboard() {
   };
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== "tourist") {
-      navigate("/sign-in");
-      return;
-    }
-
-    if (!user?.id) {
-      console.error("User ID is missing");
-      toast.error("User session invalid. Please login again.");
-      navigate("/sign-in");
-      return;
-    }
-
-    // Check if token exists
-    if (!hasAuthToken()) {
-      console.error("Auth token is missing");
-      toast.error("Please login to continue.");
-      clearAuthStorage();
-      navigate("/sign-in");
+    // Skip if not authenticated or wrong role (ProtectedRoute handles redirect)
+    if (!isAuthenticated || user?.role !== "tourist" || !user?.id) {
       return;
     }
 
@@ -102,14 +85,14 @@ export default function TouristDashboard() {
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error);
         const err = error as { response?: { status?: number } };
-        
-        // Check if it's an authentication error
+
+        // Only redirect on 401, other errors are handled by API interceptor
         if (err.response?.status === 401) {
-          toast.error("Session expired. Please login again.");
-          clearAuthStorage();
-          navigate("/sign-in");
-        } else {
-          toast.error("Failed to load dashboard data. Please try again.");
+          // API interceptor already handles redirect, just log
+          console.log("Auth error detected, API interceptor will handle redirect");
+        } else if (!err.response) {
+          // Network error - backend is down
+          toast.error("Cannot load dashboard data. Please ensure the backend is running.");
         }
       } finally {
         setIsLoading(false);
@@ -117,7 +100,7 @@ export default function TouristDashboard() {
     };
 
     fetchData();
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {

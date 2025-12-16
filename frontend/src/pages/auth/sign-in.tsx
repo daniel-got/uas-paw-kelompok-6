@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/store/auth-store";
 import { toast } from "sonner";
 import { useSEO } from "@/hooks/use-seo";
-import { saveAuthToken } from "@/lib/auth-storage";
+import { saveAuthToken, hasAuthToken } from "@/lib/auth-storage";
 import * as authService from "@/services/auth.service";
 
 interface SignInProps {
@@ -36,17 +36,20 @@ const SignIn = ({
   signupUrl = "/sign-up",
 }: SignInProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, isAuthenticated } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated with valid token
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/dashboard", { replace: true });
+    if (isAuthenticated && hasAuthToken()) {
+      // Redirect to the page they came from, or dashboard
+      const from = (location.state as { from?: Location })?.from?.pathname || "/dashboard";
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location]);
 
   useSEO({
     title: "Sign In",
@@ -82,14 +85,21 @@ const SignIn = ({
       login(response.user);
 
       toast.success(`Welcome back, ${response.user.name}!`);
-      navigate("/dashboard");
+
+      // Redirect to the page they came from, or dashboard
+      const from = (location.state as { from?: Location })?.from?.pathname || "/dashboard";
+      navigate(from, { replace: true });
     } catch (error: unknown) {
-      // Error is already handled by API interceptor, but we can add specific handling
-      const err = error as { response?: { data?: { message?: string } } };
-      if (err.response?.data?.message) {
+      // Error is already handled by API interceptor
+      const err = error as { response?: { data?: { message?: string }; status?: number }; request?: unknown };
+
+      // Only show specific error messages, API interceptor handles the rest
+      if (err.response?.status === 401 && err.response?.data?.message) {
         toast.error(err.response.data.message);
+      } else if (!err.response && err.request) {
+        // Network error - backend is down
+        toast.error("Cannot connect to server. Please ensure the backend is running.");
       }
-      // Don't show generic error as the interceptor already handles it
     } finally {
       setIsSubmitting(false);
     }

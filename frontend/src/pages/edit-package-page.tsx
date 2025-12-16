@@ -9,7 +9,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { packageSchema } from "@/lib/validations";
 import { PackageForm } from "@/components/package-form";
 import { useFormValidation } from "@/hooks/use-form-validation";
-import { useFileArray } from "@/hooks/use-file-array";
+import { useImageArray } from "@/hooks/use-image-array";
 import { useSEO } from "@/hooks/use-seo";
 import * as packageService from "@/services/package.service";
 import * as destinationService from "@/services/destination.service";
@@ -31,9 +31,6 @@ export default function EditPackagePage() {
   const [pkg, setPkg] = useState<Package | null>(null);
   const [destinations, setDestinations] = useState<Destination[]>([]);
 
-  // Track existing images from the server (as URLs)
-  const [existingImages, setExistingImages] = useState<string[]>([]);
-
   const [formData, setFormData] = useState({
     name: "",
     destinationId: "",
@@ -46,7 +43,7 @@ export default function EditPackagePage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { errors, validate } = useFormValidation(packageSchema);
-  const { files: imageFiles, previews: imagePreviews, addFiles, removeFile, canAddMore } = useFileArray(10);
+  const { images, resetImages, addImage, removeImage, updateImage } = useImageArray();
 
   useEffect(() => {
     if (!isAuthenticated || user?.role !== "agent") {
@@ -84,9 +81,7 @@ export default function EditPackagePage() {
           maxTravelers: packageData.maxTravelers.toString(),
           contactPhone: packageData.contactPhone || "",
         });
-
-        // Store existing images from the package
-        setExistingImages(packageData.images || []);
+        resetImages(packageData.images.length > 0 ? packageData.images : [""]);
       } catch (error) {
         console.error("Failed to fetch package:", error);
         toast.error("Failed to load package");
@@ -97,32 +92,21 @@ export default function EditPackagePage() {
     };
 
     fetchData();
-  }, [isAuthenticated, user, navigate, id]);
+  }, [isAuthenticated, user, navigate, id, resetImages]);
 
   const handleFieldChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleRemoveExistingImage = (index: number) => {
-    setExistingImages((prev) => prev.filter((_, i) => i !== index));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Need at least 1 image (existing or new)
-    const totalImages = existingImages.length + imageFiles.length;
-    if (totalImages === 0) {
-      toast.error("Please keep at least 1 image or upload new ones");
-      return;
-    }
 
     const dataToValidate = {
       ...formData,
       duration: Number(formData.duration),
       price: Number(formData.price),
       maxTravelers: Number(formData.maxTravelers),
-      images: [...existingImages, ...imageFiles.map((f) => f.name)], // For validation only
+      images: images.filter((img) => img.trim() !== ""),
     };
 
     if (!validate(dataToValidate)) return;
@@ -137,7 +121,7 @@ export default function EditPackagePage() {
         itinerary: dataToValidate.itinerary,
         maxTravelers: dataToValidate.maxTravelers,
         contactPhone: dataToValidate.contactPhone,
-        images: existingImages, // Keep existing images (update API uses JSON, not FormData)
+        images: dataToValidate.images,
       });
 
       toast.success("Package updated successfully!");
@@ -197,50 +181,17 @@ export default function EditPackagePage() {
                 <CardHeader>
                   <CardTitle>Package Information</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent>
                   <PackageForm
                     formData={formData}
-                    imageFiles={imageFiles}
-                    imagePreviews={imagePreviews}
+                    images={images}
                     errors={errors}
                     destinations={destinations}
                     onFieldChange={handleFieldChange}
-                    onFilesAdd={addFiles}
-                    onFileRemove={removeFile}
-                    canAddMoreFiles={canAddMore && (existingImages.length + imageFiles.length) < 10}
+                    onImageAdd={addImage}
+                    onImageRemove={removeImage}
+                    onImageChange={updateImage}
                   />
-
-                  {/* Existing Images Section */}
-                  {existingImages.length > 0 && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">Current Images</p>
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                        {existingImages.map((img, index) => (
-                          <Card key={index} className="border-border overflow-hidden group relative">
-                            <CardContent className="p-0">
-                              <div className="aspect-video relative">
-                                <img
-                                  src={img}
-                                  alt={`Existing ${index + 1}`}
-                                  className="w-full h-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                  <Button
-                                    type="button"
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={() => handleRemoveExistingImage(index)}
-                                  >
-                                    Remove
-                                  </Button>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             </div>

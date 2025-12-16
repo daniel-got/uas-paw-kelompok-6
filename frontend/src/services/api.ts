@@ -42,9 +42,12 @@ apiClient.interceptors.response.use(
       switch (status) {
         case 401:
           // Unauthorized - clear all auth data and redirect to login
-          clearAuthStorage();
-          toast.error("Session expired. Please login again.");
-          window.location.href = "/sign-in";
+          // Only redirect if not already on sign-in page to prevent loops
+          if (!window.location.pathname.includes("/sign-in")) {
+            clearAuthStorage();
+            toast.error("Session expired. Please login again.");
+            window.location.href = "/sign-in";
+          }
           break;
         case 403:
           // Forbidden
@@ -57,18 +60,21 @@ apiClient.interceptors.response.use(
           toast.error("Resource not found");
           break;
         case 500:
-          // Server error
-          logger.error("Server error:", data.message);
+        case 502:
+        case 503:
+        case 504:
+          // Server error - don't redirect, just show error
+          logger.error("Server error:", data?.message || "Server unavailable");
           toast.error("Server error. Please try again later.");
           break;
         default:
-          logger.error("API Error:", data.message);
-          toast.error(data.message || "An error occurred");
+          logger.error("API Error:", data?.message);
+          toast.error(data?.message || "An error occurred");
       }
     } else if (error.request) {
-      // Request made but no response
+      // Request made but no response (network error or server down)
       logger.error("Network error: No response from server");
-      toast.error("Network error. Please check your connection.");
+      toast.error("Cannot connect to server. Please check if the backend is running.");
     } else {
       // Error in request setup
       logger.error("Error:", error.message);
