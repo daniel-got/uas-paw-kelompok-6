@@ -27,7 +27,7 @@ interface FooterProps {
 
 const Footer = ({
   logo = {
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-1.svg",
+    src: "/tree-palm.svg",
     alt: "Wanderlust Inn",
     title: "Wanderlust Inn",
     url: "/",
@@ -35,13 +35,10 @@ const Footer = ({
   tagline = "Your journey begins here. Discover the world with us.",
   menuItems = [
     {
-      title: "Destinations",
+      title: "Explore",
       links: [
-        { text: "All Packages", url: "/packages" },
-        { text: "Maldives", url: "/packages" },
-        { text: "Bali", url: "/packages" },
-        { text: "Santorini", url: "/packages" },
-        { text: "Swiss Alps", url: "/packages" },
+        { text: "Destinations", url: "/destinations" },
+        { text: "Packages", url: "/packages" },
       ],
     },
     {
@@ -50,7 +47,6 @@ const Footer = ({
         { text: "Book a Package", url: "/packages" },
         { text: "Become an Agent", url: "/sign-up" },
         { text: "My Bookings", url: "/dashboard" },
-        { text: "Reviews", url: "/packages" },
       ],
     },
     {
@@ -58,25 +54,17 @@ const Footer = ({
       links: [
         { text: "About Us", url: "/about" },
         { text: "Contact", url: "/contact" },
-        { text: "Careers", url: "#" },
-        { text: "Blog", url: "#" },
       ],
     },
     {
       title: "Support",
       links: [
         { text: "Help Center", url: "/help" },
-        { text: "FAQs", url: "/help" },
-        { text: "Terms of Service", url: "#" },
-        { text: "Privacy Policy", url: "#" },
       ],
     },
   ],
   copyright = "© 2025 Wanderlust Inn. All rights reserved.",
-  bottomLinks = [
-    { text: "Terms and Conditions", url: "#" },
-    { text: "Privacy Policy", url: "#" },
-  ],
+  bottomLinks = [],
 }: FooterProps) => {
   return (
     <section className="py-32">
@@ -117,15 +105,17 @@ const Footer = ({
               </div>
             ))}
           </div>
-          <div className="text-muted-foreground mt-24 flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium md:flex-row md:items-center">
+          <div className="text-muted-foreground mt-24 flex flex-col justify-center gap-4 border-t pt-8 text-sm font-medium md:flex-row md:items-center">
             <p>{copyright}</p>
-            <ul className="flex gap-4">
-              {bottomLinks.map((link, linkIdx) => (
-                <li key={linkIdx} className="hover:text-primary underline">
-                  <a href={link.url}>{link.text}</a>
-                </li>
-              ))}
-            </ul>
+            {bottomLinks.length > 0 && (
+              <ul className="flex gap-4">
+                {bottomLinks.map((link, linkIdx) => (
+                  <li key={linkIdx} className="hover:text-primary underline">
+                    <a href={link.url}>{link.text}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </footer>
       </div>

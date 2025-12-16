@@ -38,7 +38,7 @@ interface Navbar1Props {
 const Navbar = ({
   logo = {
     url: "/",
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
+    src: "/tree-palm.svg",
     alt: "logo",
     title: "Wanderlust Inn",
   },

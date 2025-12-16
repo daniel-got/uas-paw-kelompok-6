@@ -162,7 +162,7 @@ export default function PackagesPage() {
 
   const handleToggleWishlist = (e: React.MouseEvent, packageId: string) => {
     e.stopPropagation();
-    
+
     if (!isAuthenticated) {
       toast.error("Please sign in to add to wishlist");
       navigate("/sign-in");
@@ -318,9 +318,8 @@ export default function PackagesPage() {
                       <Button
                         variant="outline"
                         size="icon"
-                        className={`absolute top-4 right-4 h-8 w-8 rounded-full bg-background/90 hover:bg-background ${
-                          isInWishlist(pkg.id) ? "border-red-500 text-red-500" : ""
-                        }`}
+                        className={`absolute top-4 right-4 h-8 w-8 rounded-full bg-background/90 hover:bg-background ${isInWishlist(pkg.id) ? "border-red-500 text-red-500" : ""
+                          }`}
                         onClick={(e) => handleToggleWishlist(e, pkg.id)}
                       >
                         <Heart className={`h-4 w-4 ${isInWishlist(pkg.id) ? "fill-current" : ""}`} />

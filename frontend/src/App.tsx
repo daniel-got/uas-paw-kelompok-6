@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { useAuthStore } from "@/store/auth-store";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { RoutePreloader } from "@/components/route-preloader";
+import { ProtectedRoute } from "@/components/protected-route";
 import {
   PackagesPageSkeleton,
   DashboardPageSkeleton,
@@ -126,81 +127,101 @@ export default function App() {
           <Route
             path="/book/:id"
             element={
-              <Suspense fallback={<DetailPageSkeleton />}>
-                <BookingPage />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={<DetailPageSkeleton />}>
+                  <BookingPage />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/booking-success"
             element={
-              <Suspense fallback={<GenericPageSkeleton />}>
-                <BookingSuccessPage />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={<GenericPageSkeleton />}>
+                  <BookingSuccessPage />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/wishlist"
             element={
-              <Suspense fallback={<PackagesPageSkeleton />}>
-                <WishlistPage />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={<PackagesPageSkeleton />}>
+                  <WishlistPage />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/all-bookings"
             element={
-              <Suspense fallback={<DashboardPageSkeleton />}>
-                <AllBookingsPage />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <AllBookingsPage />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/manage-packages"
             element={
-              <Suspense fallback={<DashboardPageSkeleton />}>
-                <ManagePackagesPage />
-              </Suspense>
+              <ProtectedRoute allowedRoles={["agent"]}>
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <ManagePackagesPage />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/create-package"
             element={
-              <Suspense fallback={<GenericPageSkeleton />}>
-                <CreatePackagePage />
-              </Suspense>
+              <ProtectedRoute allowedRoles={["agent"]}>
+                <Suspense fallback={<GenericPageSkeleton />}>
+                  <CreatePackagePage />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/edit-package/:id"
             element={
-              <Suspense fallback={<GenericPageSkeleton />}>
-                <EditPackagePage />
-              </Suspense>
+              <ProtectedRoute allowedRoles={["agent"]}>
+                <Suspense fallback={<GenericPageSkeleton />}>
+                  <EditPackagePage />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/dashboard"
             element={
-              <Suspense fallback={<DashboardPageSkeleton />}>
-                <DashboardRouter />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <DashboardRouter />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/profile"
             element={
-              <Suspense fallback={<GenericPageSkeleton />}>
-                <ProfilePage />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={<GenericPageSkeleton />}>
+                  <ProfilePage />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/agent/dashboard"
             element={
-              <Suspense fallback={<DashboardPageSkeleton />}>
-                <AgentDashboard />
-              </Suspense>
+              <ProtectedRoute allowedRoles={["agent"]}>
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <AgentDashboard />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
 
