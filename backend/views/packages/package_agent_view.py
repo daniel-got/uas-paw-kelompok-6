@@ -12,17 +12,20 @@ def get_package_by_agent(request):
     agent_id = request.matchdict.get("agentId")
 
     with Session() as session:
+        #filter id agent 
         try:
             uuid.UUID(agent_id)
         except ValueError:
             return Response(json_body={"error": "Invalid Agent ID format"}, status=400)
-
+        
+        #filter package by agent_id 
         stmt = (
             select(Package)
             .where(Package.agent_id == agent_id)
             .order_by(desc(Package.created_at))
         )
-
+        
+        #filtered package by agent
         try:
             results = session.execute(stmt).scalars().all()
             return [serialization_data(pkg) for pkg in results]
