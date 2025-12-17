@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,9 @@ export default function EditPackagePage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { errors, validate } = useFormValidation(packageSchema);
-  const { images, resetImages, addImage, removeImage, updateImage } = useImageArray();
+  const { images, resetImages: resetImagesOriginal, addImage, removeImage, updateImage } = useImageArray();
+
+  const resetImages = useCallback(resetImagesOriginal, []);
 
   useEffect(() => {
     if (!isAuthenticated || user?.role !== "agent") {
@@ -50,9 +52,12 @@ export default function EditPackagePage() {
       return;
     }
 
-    const fetchData = async () => {
-      if (!id) return;
+    if (!id) {
+      setIsLoading(false);
+      return;
+    }
 
+    const fetchData = async () => {
       setIsLoading(true);
       try {
         const [packageData, destinationsData] = await Promise.all([
@@ -91,7 +96,7 @@ export default function EditPackagePage() {
     };
 
     fetchData();
-  }, [isAuthenticated, user, navigate, id, resetImages]);
+  }, [isAuthenticated, user?.role, user?.id, navigate, id, resetImages]);
 
   const handleFieldChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
