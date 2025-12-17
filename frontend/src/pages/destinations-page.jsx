@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDestinationStore } from "@/store/destination-store";
+import MainLayout from "@/layout/main-layout";
+import { useSEO } from "@/hooks/use-seo";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +18,12 @@ export default function DestinationsPage() {
   const { destinations, packages, setDestinations, setPackages } = useDestinationStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("all");
+
+  useSEO({
+    title: "Destinations",
+    description: "Explore amazing travel destinations around the world",
+    keywords: "destinations, travel, places, explore",
+  });
 
   // Fetch data from API
   useEffect(() => {
@@ -68,20 +76,20 @@ export default function DestinationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
+    <MainLayout>
+      <section className="space-y-6 py-2 md:space-y-8 md:py-8 lg:py-12">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="mb-2 text-4xl font-bold text-gray-900 dark:text-white">
+        <div>
+          <h1 className="text-foreground mb-2 text-3xl font-bold md:text-4xl">
             Explore Destinations
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground">
             Discover amazing places around the world with our curated travel packages
           </p>
         </div>
 
         {/* Filters */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row">
+        <div className="flex flex-col gap-4 sm:flex-row">
           <div className="relative flex-1">
             <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input
@@ -108,7 +116,7 @@ export default function DestinationsPage() {
         </div>
 
         {/* Results Count */}
-        <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+        <div className="text-muted-foreground text-sm">
           Showing {filteredDestinations.length} destination
           {filteredDestinations.length !== 1 ? "s" : ""}
         </div>
@@ -116,11 +124,11 @@ export default function DestinationsPage() {
         {/* Destinations Grid */}
         {filteredDestinations.length === 0 ? (
           <div className="py-16 text-center">
-            <MapPin className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-            <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+            <MapPin className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+            <h3 className="text-foreground mb-2 text-lg font-semibold">
               No destinations found
             </h3>
-            <p className="mb-4 text-gray-600 dark:text-gray-400">
+            <p className="text-muted-foreground mb-4">
               Try adjusting your search or filters
             </p>
             <Button
@@ -134,7 +142,7 @@ export default function DestinationsPage() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredDestinations.map((destination) => {
               const popularPackages = getPopularPackages(destination.id);
               const totalPackages = packages.filter(
@@ -144,7 +152,7 @@ export default function DestinationsPage() {
               return (
                 <Card
                   key={destination.id}
-                  className="overflow-hidden transition-shadow duration-300 hover:shadow-lg"
+                  className="border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg"
                 >
                   {/* Destination Image */}
                   <div className="relative h-48 overflow-hidden">
@@ -210,7 +218,7 @@ export default function DestinationsPage() {
             })}
           </div>
         )}
-      </div>
-    </div>
+      </section>
+    </MainLayout>
   );
 }
