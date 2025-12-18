@@ -64,3 +64,4 @@ class Booking(Base):
     package = relationship("Package", back_populates="bookings")
     tourist = relationship("User", back_populates="bookings", foreign_keys=[tourist_id])
     review = relationship("Review", back_populates="booking", uselist=False)
+    guide_assignments = relationship("TourGuideAssignment", back_populates="booking")

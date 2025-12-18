@@ -23,29 +23,7 @@ class ChangePasswordRequest(BaseModel):
 @view_config(route_name="update_profile", request_method="PUT", renderer="json")
 @jwt_validate
 def update_profile(request):
-    """
-    PUT /api/auth/profile
-    Update user profile (name, email)
-    
-    Request (JSON):
-    {
-        "name": "New Name",
-        "email": "newemail@example.com"
-    }
-    
-    Response (200 OK):
-    {
-        "message": "Profile updated successfully",
-        "user": {
-            "id": "uuid",
-            "name": "New Name",
-            "email": "newemail@example.com",
-            "role": "tourist"
-        }
-    }
-    """
     try:
-        # Parse request body
         try:
             req_data = UpdateProfileRequest(**request.json_body)
         except ValidationError as err:
@@ -94,21 +72,6 @@ def update_profile(request):
 @view_config(route_name="change_password", request_method="POST", renderer="json")
 @jwt_validate
 def change_password(request):
-    """
-    POST /api/auth/change-password
-    Change user password
-    
-    Request (JSON):
-    {
-        "currentPassword": "old_password",
-        "newPassword": "new_password"
-    }
-    
-    Response (200 OK):
-    {
-        "message": "Password changed successfully"
-    }
-    """
     try:
         # Parse request body
         try:

@@ -82,9 +82,14 @@ python -m venv env
 ```
 
 4. Source activate
+##### Windows
 
 ```sh
 .\env\Scripts\activate
+```
+##### Unix
+```sh
+source env/bin/activate
 ```
 
 5. Install dependensi
@@ -101,7 +106,7 @@ pip install -r requirements.txt
 alembic upgrade head
 ```
 
-2. Autogenerate migration
+2. Autogenerate migration (optional jika menambah/mengedit model)
 
 ```sh
 alembic revision --autogenerate -m "initiate"
@@ -117,47 +122,43 @@ python main.py
 
 ---
 
-## 🐳 Docker Setup
+## Docker/Podman Setup
 
 ### Requirements:
 - Docker
 - Docker Compose
+###### atau
+- Podman
+- Podman Compose
 
 ### Quick Start dengan Docker Compose
 
-1. **Masuk ke folder backend**
+1. Masuk ke folder backend
 
 ```sh
 cd backend
 ```
 
-2. **Build dan jalankan containers**
+2. Build dan jalankan containers
 
 ```sh
 docker-compose up --build
 ```
 
-Perintah ini akan:
-- Build Docker image untuk Pyramid backend
-- Create PostgreSQL 15 container
-- Auto-initialize database dengan `init-db.sql`
-- Auto-run alembic migrations
-- Start Pyramid server di port 6543
-
-3. **Cek apakah service berjalan**
+3. Cek apakah service berjalan
 
 ```bash
 docker-compose ps
 ```
 
-Output yang diharapkan:
+Output yang diharapkan (jika menggunakan docker compose):
 ```
 NAME              STATUS
 uas-pengweb-db    Up (healthy)
 uas-pyramid-backend  Up
 ```
 
-4. **Test API**
+4. Test API
 
 ```bash
 curl http://localhost:6543/api/auth/me
@@ -181,18 +182,6 @@ curl http://localhost:6543/api/auth/me
 - Volumes:
   - `./storage:/app/storage` - Application storage (persistent)
   - `.:/app` - Code mount for development
-
-### Dockerfile Details
-
-**Base Image:** `python:3.11-slim`
-
-**Installed Dependencies:**
-- `postgresql-client` - For Alembic migrations to PostgreSQL
-- `libzbar0` - For QRIS code scanning
-
-**Exposed Port:** `6543` (Pyramid default)
-
-**Health Check:** Pings `/api/auth/me` every 30 seconds
 
 ### Useful Docker Commands
 
@@ -288,13 +277,13 @@ docker-compose exec pyramid-backend alembic upgrade head
 
 ```json
 {
+  "message": "User Registered",
   "user": {
     "id": "uuid-here",
     "name": "John Doe",
     "email": "john@example.com",
     "role": "tourist"
-  },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
 }
 ```
 
@@ -346,6 +335,62 @@ Authorization: Bearer {token}
   "name": "John Doe",
   "email": "john@example.com",
   "role": "tourist"
+}
+```
+
+---
+
+### PUT /api/auth/profile
+
+**Change profile info**
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+**Request Body:**
+
+```json
+{
+  "name": "Fqwawa", //string | optional
+  "email": "john@example.com" //string | optional
+}
+```
+**Response (200 OK):**
+
+```json
+{
+  "message": "Profile updated successfully",
+  "user": {
+  	"id": "5066b09f-e0f9-4229-ac75-3d396cb6c0fc",
+  	"name": "Fqwawa",
+	  "email": "faiq@gmail.com",
+	  "role": "agent"
+  }
+}
+```
+
+---
+
+### PUT /api/auth/change-password
+
+**Change user password**
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+**Request Body:**
+
+```json
+{
+  "currentPassword": "Fqwawa", //string
+  "newPassword": "john@example.com" //string
+}
+```
+**Response (200 OK):**
+
+```json
+{
+	"message": "Password changed successfully"
 }
 ```
 

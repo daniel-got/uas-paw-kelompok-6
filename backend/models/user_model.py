@@ -13,7 +13,7 @@ class User(Base):
     name = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)  # bcrypt hashed
-    role = Column(Enum("tourist", "agent", name="user_role"), nullable=False)
+    role = Column(Enum("tourist", "agent", "guide", name="user_role"), nullable=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     updated_at = Column(
         DateTime,
@@ -26,3 +26,4 @@ class User(Base):
     )
     packages = relationship("Package", back_populates="agent")
     reviews = relationship("Review", back_populates="tourist")
+    guide_tasks = relationship("TourGuideAssignment", back_populates="guide")
