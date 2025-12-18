@@ -2,7 +2,9 @@ import apiClient from "./api";
 // Get all reviews for a package
 export const getPackageReviews = async (packageId) => {
   const response = await apiClient.get(`/api/reviews/package/${packageId}`);
-  return response.data.data; 
+  
+ 
+  return response.data.data || response.data || [];
 };
 
 

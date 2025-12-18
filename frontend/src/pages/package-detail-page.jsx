@@ -314,29 +314,30 @@ useEffect(() => {
 
               {/* Reviews List */}
               <Card className="border-border">
-                <CardHeader>
-                  <CardTitle className="text-foreground">
-                    Customer Reviews ({getReviewsByPackage(id || "").length})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {getReviewsByPackage(id || "").length > 0 ? (
-                    getReviewsByPackage(id || "").map((review) => (
-                      <ReviewCard
-                        key={review.id}
-                        review={review}
-                        touristName={review.tourist?.name || "Anonymous Tourist"}
-                      />
-                    ))
-                  ) : (
-                    <div className="py-8 text-center">
-                      <p className="text-muted-foreground">
-                        No reviews yet. Be the first to review
-                      </p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+  <CardHeader>
+    <CardTitle className="text-foreground">
+      Customer Reviews ({getReviewsByPackage(id || "").length})
+    </CardTitle>
+  </CardHeader>
+  <CardContent className="space-y-4">
+    {getReviewsByPackage(id || "").length > 0 ? (
+      getReviewsByPackage(id || "").map((review) => (
+        <ReviewCard
+          key={review.id}
+          review={review}
+          touristName={review.tourist?.name || "Anonymous Tourist"}
+        />
+      ))
+    ) : (
+      <div className="py-8 text-center">
+        <p className="text-muted-foreground">
+          No reviews yet. Be the first to review
+        </p>
+      </div>
+    )}
+  </CardContent>
+</Card>
+
             </div>
           </div>
 
