@@ -58,6 +58,7 @@ export default function BookingSuccessPage() {
       try {
         // Fetch booking details
         const bookingData = await bookingService.getBookingById(bookingId);
+        console.log("BOOKING DATA:", bookingData);
         setBooking(bookingData);
 
         // Fetch package details

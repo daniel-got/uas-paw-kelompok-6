@@ -2,13 +2,14 @@ import apiClient from "./api";
 // Get all reviews for a package
 export const getPackageReviews = async (packageId) => {
   const response = await apiClient.get(`/api/reviews/package/${packageId}`);
-  return response.data;
+  return response.data.data; 
 };
+
 
 // Get reviews by tourist
 export const getReviewsByTourist = async (touristId) => {
   const response = await apiClient.get(`/api/reviews/tourist/${touristId}`);
-  return response.data;
+  return response.data.data; 
 };
 
 // Create review (Tourist only, after completing trip)

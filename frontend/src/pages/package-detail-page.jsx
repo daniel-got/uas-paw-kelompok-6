@@ -22,12 +22,16 @@ import { toast } from "sonner";
 import { getImageUrl } from "@/lib/image-utils";
 import { getWhatsAppLink } from "@/lib/formatters";
 
+
 export default function PackageDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { destinations, setDestinations } = useDestinationStore();
   const { user, isAuthenticated } = useAuthStore();
-  const { setReviews, getReviewsByPackage } = useReviewStore();
+  const { fetchReviewsByPackage, getReviewsByPackage } = useReviewStore();
+
+ 
+
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -36,46 +40,40 @@ export default function PackageDetailPage() {
   const [destination, setDestination] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!id) return;
+useEffect(() => {
+  const fetchData = async () => {
+    if (!id) return;
 
-      setIsLoading(true);
-      try {
-        // Fetch package detail
-        const packageData = await packageService.getPackageById(id);
-        setPkg(packageData);
+    setIsLoading(true);
+    try {
+      const packageData = await packageService.getPackageById(id);
+      setPkg(packageData);
 
-        // Fetch destinations if not already in store
-        if (destinations.length === 0) {
-          const destinationsData = await destinationService.getAllDestinations();
-          setDestinations(destinationsData);
-          const dest = destinationsData.find((d) => d.id === packageData.destinationId);
-          setDestination(dest || null);
-        } else {
-          const dest = destinations.find((d) => d.id === packageData.destinationId);
-          setDestination(dest || null);
-        }
-
-        // Fetch reviews for this package
-        try {
-          const reviewsData = await reviewService.getPackageReviews(id);
-          setReviews(reviewsData);
-        } catch {
-          // Reviews might not exist yet
-          setReviews([]);
-        }
-      } catch (err) {
-        console.error("Failed to fetch package:", err);
-        toast.error("Failed to load package details");
-        setPkg(null);
-      } finally {
-        setIsLoading(false);
+      if (destinations.length === 0) {
+        const destinationsData = await destinationService.getAllDestinations();
+        setDestinations(destinationsData);
+        setDestination(
+          destinationsData.find(d => d.id === packageData.destinationId) || null
+        );
+      } else {
+        setDestination(
+          destinations.find(d => d.id === packageData.destinationId) || null
+        );
       }
-    };
 
-    fetchData();
-  }, [id, setDestinations, setReviews]);
+      // ✅ fetch reviews
+      await fetchReviewsByPackage(id);
+
+    } catch (err) {
+      toast.error("Failed to load package details");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchData();
+}, [id, destinations.length, fetchReviewsByPackage, setDestinations]);
+
 
   useSEO({
     title: pkg ? pkg.name : "Package Details",

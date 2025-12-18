@@ -6,10 +6,7 @@ export const getAllBookings = async () => {
 };
 
 // Get booking by ID
-export const getBookingById = async (id) => {
-  const response = await apiClient.get(`/api/bookings/${id}`);
-  return response.data;
-};
+
 
 // Get bookings by tourist
 export const getBookingsByTourist = async (touristId) => {
