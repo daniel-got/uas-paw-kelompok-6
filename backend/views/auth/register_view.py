@@ -11,6 +11,7 @@ from models.user_model import User
 class UserRole(str, Enum):
     agent = "agent"
     tourist = "tourist"
+    guide = "guide"
 
 
 class RegisterRequest(BaseModel):

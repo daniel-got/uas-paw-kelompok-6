@@ -6,6 +6,7 @@ from .payment_routes import include_payments_routes
 from .booking_routes import include_bookings_routes
 from .review_routes import include_review_routes
 from .analytics_routes import include_analytics_routes
+from .assignment_routes import include_assignment_routes
 
 
 def include_routes(config):
@@ -17,3 +18,4 @@ def include_routes(config):
     include_bookings_routes(config)
     include_review_routes(config)
     include_analytics_routes(config)
+    include_assignment_routes(config)

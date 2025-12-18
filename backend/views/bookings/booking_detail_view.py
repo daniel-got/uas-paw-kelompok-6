@@ -1,4 +1,3 @@
-"""Get booking by ID"""
 from pyramid.view import view_config
 from pyramid.response import Response
 from sqlalchemy import select
@@ -61,7 +60,15 @@ def booking_detail(request):
             if str(booking.package.agent_id) != user_id:
                 request.response.status = 403
                 return {"error": "Forbidden"}
-        
+
+        #assign guide 
+        guide_info = None
+        if booking.guide_assignments:
+            last_assignment = booking.guide_assignments[-1]
+            guide_info = {
+                "name": last_assignment.guide.name,
+                "status": last_assignment.status
+            }
         return {
             "id": str(booking.id),
             "packageId": str(booking.package_id),

@@ -111,7 +111,14 @@ def main():
         config.add_static_view(name='destinations', path='storage/destinations', cache_max_age=3600)
         config.add_static_view(name='packages', path='storage/packages', cache_max_age=3600)
 
+        #assignment_routes
+        config.add_route("assignment_create", "/api/assignments")
+        config.add_route("assignment_list", "/api/assignments")
+        config.add_route("assignment_status", "/api/assignments/{id}/status")
+
+
         config.scan("views")
+        config.scan("views.assignments")
         app = config.make_wsgi_app()
 
     print("Server running on http://0.0.0.0:6543 (Hot Reload Active)")
