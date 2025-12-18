@@ -167,7 +167,7 @@ export function PaymentUpload({
         {paymentStatus !== "verified" && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <ImageIcon className="h-5 w-5" />
+              <Image className="h-5 w-5" />
               <Label>Upload Payment Proof</Label>
             </div>
 
