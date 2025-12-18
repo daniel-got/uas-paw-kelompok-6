@@ -74,7 +74,7 @@ export default function WishlistPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-foreground flex items-center gap-2 text-3xl font-bold md:text-4xl">
-              <Heart className="h-8 w-8 fill-current text-red-500" />
+              
               My Wishlist
             </h1>
             <p className="text-muted-foreground mt-2 text-base md:text-lg">
@@ -125,11 +125,7 @@ export default function WishlistPage() {
                         ${pkg.price.toLocaleString()}
                       </span>
                     </div>
-                    {pkg.rating && pkg.rating >= 4.8 && (
-                      <Badge className="bg-primary text-primary-foreground absolute top-4 left-4">
-                        Top Rated
-                      </Badge>
-                    )}
+                    
                   </div>
 
                   <CardContent className="p-2">
@@ -149,12 +145,7 @@ export default function WishlistPage() {
                         <span className="text-muted-foreground">
                           {pkg.duration} {pkg.duration === 1 ? "Day" : "Days"}
                         </span>
-                        {pkg.rating && pkg.reviewsCount && pkg.reviewsCount > 0 && (
-                          <div className="flex items-center gap-1">
-                            <span className="text-foreground font-semibold">⭐ {pkg.rating}</span>
-                            <span className="text-muted-foreground">({pkg.reviewsCount})</span>
-                          </div>
-                        )}
+                        
                       </div>
 
                       <div className="flex gap-2">

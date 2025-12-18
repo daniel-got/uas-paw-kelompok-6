@@ -304,11 +304,7 @@ export default function PackagesPage() {
                           ${pkg.price.toLocaleString()}
                         </span>
                       </div>
-                      {pkg.rating && pkg.rating >= 4.8 && (
-                        <Badge className="bg-primary text-primary-foreground absolute top-4 left-4">
-                          Top Rated
-                        </Badge>
-                      )}
+                      
                       {/* Wishlist Button */}
                       <Button
                         variant="outline"
@@ -353,12 +349,7 @@ export default function PackagesPage() {
                           <span className="text-muted-foreground">
                             {pkg.duration} {pkg.duration === 1 ? "Day" : "Days"}
                           </span>
-                          {pkg.rating && pkg.reviewsCount && pkg.reviewsCount > 0 && (
-                            <div className="flex items-center gap-1">
-                              <span className="text-foreground font-semibold">⭐ {pkg.rating}</span>
-                              <span className="text-muted-foreground">({pkg.reviewsCount})</span>
-                            </div>
-                          )}
+                         
                         </div>
 
                         <Button className="bg-primary text-primary-foreground hover:bg-primary/90 w-full">

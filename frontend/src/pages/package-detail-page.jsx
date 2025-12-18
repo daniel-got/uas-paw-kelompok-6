@@ -195,12 +195,7 @@ useEffect(() => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    {pkg.rating && (
-                      <Badge className="bg-primary text-primary-foreground flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-current" />
-                        {pkg.rating}
-                      </Badge>
-                    )}
+                    
                     <Button
                       variant="outline"
                       size="icon"
@@ -273,29 +268,7 @@ useEffect(() => {
                 </TabsContent>
               </Tabs>
 
-              {/* Reviews Summary */}
-              {pkg.reviewsCount && pkg.reviewsCount > 0 && (
-                <Card className="border-border">
-                  <CardHeader>
-                    <CardTitle className="text-foreground text-lg">Reviews</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center gap-4">
-                      <div className="text-center">
-                        <div className="text-foreground text-3xl font-bold">{pkg.rating}</div>
-                        <div className="text-muted-foreground text-sm">out of 5</div>
-                      </div>
-                      <Separator orientation="vertical" className="h-12" />
-                      <div>
-                        <p className="text-muted-foreground text-sm">
-                          Based on {pkg.reviewsCount}{" "}
-                          {pkg.reviewsCount === 1 ? "review" : "reviews"}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+              
 
               {/* Write Review Button */}
               {isAuthenticated && user?.role === "tourist" && (
