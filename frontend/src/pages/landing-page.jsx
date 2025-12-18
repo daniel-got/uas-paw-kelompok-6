@@ -87,7 +87,7 @@ export default function LandingPage() {
                 Explore
               </Button>
               <Button
-                onClick={() => (window.location.href = "mailto:contact@wanderlustinn.com")}
+                onClick={() => navigate("/contact")}
                 variant="outline"
                 className="border-border rounded-full px-4 text-xs md:px-8 md:text-base"
               >

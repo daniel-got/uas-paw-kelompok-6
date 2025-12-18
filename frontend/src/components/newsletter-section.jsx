@@ -18,7 +18,7 @@ export const NewsletterSection = ({
     // Handle newsletter subscription
     // TODO: Integrate with newsletter API
     setEmail("");
-    navigate("/packages");
+    navigate("/contact");
   };
 
   return (
@@ -44,26 +44,13 @@ export const NewsletterSection = ({
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-muted-foreground text-sm font-medium">
-                  Your Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="border-border bg-background"
-                />
-              </div>
+             
 
               <Button
                 type="submit"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 w-full"
               >
-                Subscribe & Explore
+                Contact Us
               </Button>
             </form>
           </div>
